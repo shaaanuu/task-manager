@@ -1,0 +1,35 @@
+{% extends 'tasks/base.html' %} {% block content %}
+<h2 class="mb-4">Dashboard</h2>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card text-bg-primary mb-3 shadow">
+      <div class="card-body">
+        <h5 class="card-title">Total Tasks</h5>
+        <p class="card-text fs-3">{{ total_tasks }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card text-bg-success mb-3 shadow">
+      <div class="card-body">
+        <h5 class="card-title">Completed Tasks</h5>
+        <p class="card-text fs-3">{{ completed_tasks }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card text-bg-warning mb-3 shadow">
+      <div class="card-body">
+        <h5 class="card-title">Pending Tasks</h5>
+        <p class="card-text fs-3">{{ pending_tasks }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a href="{% url 'task_create' %}" class="btn btn-dark">Create New Task</a>
+<a href="{% url 'task_list' %}" class="btn btn-outline-dark">View All Tasks</a>
+{% endblock %}
