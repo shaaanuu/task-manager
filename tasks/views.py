@@ -4,76 +4,81 @@ from .forms import TaskForm, SignupForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 
+
 def signup_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('dashboard')
+            return redirect("dashboard")
     else:
         form = SignupForm()
-    return render(request, 'tasks/signup.html', {'form': form})
+    return render(request, "tasks/signup.html", {"form": form})
 
 
 @login_required
 def dashboard(request):
     tasks = Task.objects.filter(created_by=request.user)
     total_tasks = tasks.count()
-    completed_tasks = tasks.filter(status='Completed').count()
-    pending_tasks = tasks.filter(status='Pending').count()
+    completed_tasks = tasks.filter(status="Completed").count()
+    pending_tasks = tasks.filter(status="Pending").count()
 
     context = {
-        'total_tasks': total_tasks,
-        'completed_tasks': completed_tasks,
-        'pending_tasks': pending_tasks,
+        "total_tasks": total_tasks,
+        "completed_tasks": completed_tasks,
+        "pending_tasks": pending_tasks,
     }
-    return render(request, 'tasks/dashboard.html', context)
+    return render(request, "tasks/dashboard.html", context)
 
 
 @login_required
 def task_list(request):
-    tasks = Task.objects.filter(created_by=request.user).order_by('-id')
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+    tasks = Task.objects.filter(created_by=request.user).order_by("-id")
+    return render(request, "tasks/task_list.html", {"tasks": tasks})
 
 
 @login_required
 def task_detail(request, id):
     task = get_object_or_404(Task, id=id, created_by=request.user)
-    return render(request, 'tasks/task_detail.html', {'task': task})
+    return render(request, "tasks/task_detail.html", {"task": task})
 
 
 @login_required
 def task_create(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
             task.save()
-            return redirect('task_list')
+            return redirect("task_list")
     else:
         form = TaskForm()
-    return render(request, 'tasks/task_form.html', {'form': form, 'page_title': 'Create Task'})
+    return render(
+        request, "tasks/task_form.html", {"form": form, "page_title": "Create Task"}
+    )
 
 
 @login_required
 def task_update(request, id):
     task = get_object_or_404(Task, id=id, created_by=request.user)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('task_list')
+            return redirect("task_list")
     else:
         form = TaskForm(instance=task)
-    return render(request, 'tasks/task_form.html', {'form': form, 'page_title': 'Update Task'})
+    return render(
+        request, "tasks/task_form.html", {"form": form, "page_title": "Update Task"}
+    )
 
 
 @login_required
 def task_delete(request, id):
     task = get_object_or_404(Task, id=id, created_by=request.user)
-    if request.method == 'POST':
+    if request.method == "POST":
         task.delete()
-        return redirect('task_list')
-    return render(request, 'tasks/task_confirm_delete.html', {'task': task})
+        return redirect("task_list")
+    return render(request, "tasks/task_confirm_delete.html", {"task": task})
